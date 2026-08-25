@@ -1,0 +1,10 @@
+name: wayback-fetch2
+on: { workflow_dispatch: {} }
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./fetch2.sh
+      - uses: actions/upload-artifact@v4
+        with: { name: captures2, path: out2/ }
