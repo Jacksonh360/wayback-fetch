@@ -10,11 +10,15 @@ OUT=out4; mkdir -p "$OUT/cdx"; LOG="$OUT/log.txt"; : > "$LOG"
 UA="Mozilla/5.0 (research; contact via github.com/Jacksonh360)"
 
 cdxq(){ # name url extra
-  local n=$1 u=$2 extra=${3:-} out="$OUT/cdx/cdx_$n.txt" rk="" page=0 tmp
+  local n=$1
+  local u=$2
+  local extra=${3:-}
+  local out="$OUT/cdx/cdx_$n.txt"
+  local rk="" page=0 tmp q
   : > "$out"
   while [ $page -lt 8 ]; do
     tmp=$(mktemp)
-    local q="https://web.archive.org/cdx/search/cdx?url=${u}&fl=timestamp,original,statuscode,mimetype,length&limit=1000&showResumeKey=true${extra}"
+    q="https://web.archive.org/cdx/search/cdx?url=${u}&fl=timestamp,original,statuscode,mimetype,length&limit=1000&showResumeKey=true${extra}"
     [ -n "$rk" ] && q="${q}&resumeKey=${rk}"
     curl -sL -m 300 -A "$UA" "$q" -o "$tmp" || { rm -f "$tmp"; break; }
     awk 'f{next} /^[[:space:]]*$/{f=1;next} {print}' "$tmp" >> "$out"
